@@ -16,8 +16,8 @@ public class Menu{
 	
 	@Override
 	public String toString() {
-		String str = "  %d) %s %d천원";
-		return String.format(str, menuNum, menuName, menuPrice/1000);
+		String str = "  %d) %s %d원";
+		return String.format(str, menuNum, menuName, menuPrice);
 	}
 	
 	

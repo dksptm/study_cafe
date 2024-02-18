@@ -92,8 +92,8 @@ public class TicketDAO {
 		return false;
 	}
 	
-	// 간단한 자리조회 - rent 테이블에서 자리번호가 있는것 가져오기.
-	public List<Integer> seatList() {
+	// 간단한 자리조회 - rentvu 테이블에서 자리번호가 있는것 가져오기.
+	public List<Integer> useSeatsNo() {
 		List<Integer> seats = new ArrayList<>();
 		conn = DAO.getConn();
 		sql = "SELECT seat_id\r\n"
@@ -175,9 +175,9 @@ public class TicketDAO {
 		return tk;
 	}
 	
-	// 3.자리대여 - 회원의 미사용이용권들 가져오기
+	// 3.자리대여 - 회원의 미사용이용권들 가져오기.
 	//            (모든정보X, 미사용인 이용권번호와 time).
-	//            myTkInfo()는 테이블조인이라 사용안함. 
+	//            (myTkInfo()는 테이블조인이라 사용안함).
 	public List<Ticket> myTkNoAry(Member mem){
 		List<Ticket> tkAry = new ArrayList<>();
 		conn = DAO.getConn();
@@ -383,6 +383,7 @@ public class TicketDAO {
 		}
 		return r;
 	}
+	// 기타 : 종료시간이 지난자리 반납처리.
 	//       rent 테이블 수정.
 	public int resetRent() {
 		int r = -1;

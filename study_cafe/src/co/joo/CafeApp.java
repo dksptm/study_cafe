@@ -1,29 +1,10 @@
 package co.joo;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 //사용자의 입출력 처리. 메인메소드.
 public class CafeApp {
-
-	// 자리뷰 메소드(자리조회,자리대여,자리변경에서 반복사용).
-	public static void seatView(List<Integer> seats) {
-		int empty = 0;
-		for (int i = 1; i <= 3; i++) {
-			System.out.println("┌───────────┬───────────┬───────────┐");
-			for (int j = 1; j <= 3; j++) {
-				empty++;
-				if (seats.contains(empty)) {
-					System.out.print("│● " + empty + " 선택불가 ");
-				} else {
-					System.out.print("│○ " + empty + " 선택가능 ");
-				}
-			}
-			System.out.print("│");
-			System.out.println("\n└───────────┴───────────┴───────────┘");
-		}
-	}// end of seatView.
 
 	// 메인메소드
 	public static void main(String[] args) {
@@ -38,20 +19,12 @@ public class CafeApp {
 		int menu, choice = 0;
 		Member mem = null;
 		Member loginMem = null;
-		List<Integer> seats;
 		
-		/**  시간지난 자리 리셋  **/
+		/**  시간지난 자리 리셋  **/	
+		System.out.printf("%d건의 대여정보 리셋.\n", tdao.resetTk());
+		System.out.printf("%d건의 이용권정보 리셋.\n", tdao.resetRent());
 		
-		int r = tdao.resetTk();
-		if (r == tdao.resetRent()) {
-				System.out.println("종료시간 지난티켓 리셋.");
-		} else {
-				System.out.println("티켓리셋 오류");
-		}
-		r = 0;
-		
-		/**  회원가입 또는 로그인  **/
-		
+		/**  회원가입 또는 로그인  **/		
 		System.out.println("1.회원가입 2.로그인");
 		System.out.print("▷선택>> ");
 		menu = scn.nextInt(); scn.nextLine();
@@ -139,9 +112,13 @@ public class CafeApp {
 		}
 		
 		/**  스터디카페 이용하기  **/
-		
 		while(run) {
+			// 자주사용하는 변수선언 및 초기화.
+			Seat seat = new Seat();
+			List<Integer> seatsNo;
+			Ticket myTk;
 			menu= 0; choice = 0;
+			
 			System.out.println("1.이용권구입 2.자리조회 3.자리대여 4.자리변경 5.정보조회 6.정보수정 7.퇴실 9.종료");
 			System.out.print("▷선택>> ");
 			menu = scn.nextInt(); scn.nextLine();
@@ -173,26 +150,25 @@ public class CafeApp {
 			case 2: // 2.자리조회
 				
 				System.out.println("▷자리를 조회합니다.◁");
-				Seat s = new Seat();
 				List<Seat> useSeats = tdao.useSeats();
-				List<Seat> full = s.useSeat(useSeats);
-				s.seatDetailVu(full);
+				List<Seat> full = seat.useSeat(useSeats);
+				seat.seatDetailVu(full);
 				
-				s = null; useSeats = null; full = null;
+				seat = null; useSeats = null; full = null;
 				break;
 				
 			case 3: // 3.자리대여
 				
 				// 빈자리여부 확인.
-				seats = tdao.seatList();
-				if (seats.size() > 8) { // 빈자리 없으면 switch 나가기.
+				seatsNo = tdao.useSeatsNo();
+				if (seatsNo.size() > 8) { // 빈자리 없으면 switch 나가기.
 					System.out.println("▶모든 자리가 대여중입니다.◀");
 					System.out.println("▶메인메뉴로 이동.◀\n");
 					break; 
 				}
 				
 				// loginMem의 현재상태(이미 사용중인지) 확인.
-				Ticket myTk = tdao.myTkUse(loginMem);
+				myTk = tdao.myTkUse(loginMem);
 				int mySeat = myTk.getSeatId();
 				if(mySeat != 0) { // 이미 자리를 사용중이면 switch 나가기.
 					System.out.println("▶현재 자리를 사용중입니다 → " + mySeat + "번◀");
@@ -209,9 +185,9 @@ public class CafeApp {
 					System.out.println("▶이용권부터 구입해주세요.◀\n");
 					myTkAry = null; tkCnt = 0;
 					break;
-				}
+				}	
 				
-				// 이용권 선택.
+				// loginMem의 이용권 확인 - 이용권 선택.
 				int choiceTk = -1;
 					// 이용권 선택 - 목록출력
 				System.out.println("───────────────────");
@@ -242,13 +218,13 @@ public class CafeApp {
 				// 자리선택.
 				int choiceSeat = 0;
 				System.out.println("▷대여가능한 자리를 확인하세요.◁");
-				seatView(seats);
+				seat.seatVu(seatsNo);
 				while(true) {
 					System.out.print("▷원하는 자리를 입력하세요.>> ");
 					choiceSeat = scn.nextInt(); scn.nextLine();
-					if (choiceSeat < 1 || choiceSeat > 9) {
+					if (choiceSeat < seat.FIRST_SEAT || choiceSeat > seat.LAST_SEAT) {
 						System.out.println("▶잘못된 자리번호 입니다.◀");
-					} else if (seats.contains(choiceSeat)) {
+					} else if (seatsNo.contains(choiceSeat)) {
 						System.out.println("▶현재 사용중인 자리입니다.◀");
 					} else {
 						System.out.println("▷" + choiceSeat + "번 자리 대여를 시작합니다.◁");
@@ -260,7 +236,7 @@ public class CafeApp {
 				if (tdao.rentInsert(choiceTk, choiceSeat)) {
 					if(tdao.tkUpdate(choiceTk)) {
 						System.out.println("▷지금부터 시간이 차감됩니다...◁");
-						myTk = tdao.myTkUse(loginMem);
+						myTk = tdao.myTkUse(loginMem); // 다시 티켓정보 가져오기.
 						System.out.printf("▷%s님 / ", loginMem.getName());
 						System.out.printf("자리번호: %d번 /", myTk.getSeatId());
 						System.out.printf("남은시간: %s ◁\n\n", myTk.restTimeString());
@@ -272,17 +248,17 @@ public class CafeApp {
 				}
 				
 				// 변수들 초기화
-				seats = null; myTk = null; myTkAry = null;
+				myTkAry = null;
 				choiceTk = 0; choiceSeat = 0; 
-				tkCnt = 0; mySeat = 0; choice = 0;
+				tkCnt = 0; mySeat = 0;
 				
 				break;
 				
 			case 4: // 4.자리변경.
 				
 				// 빈자리여부 확인.
-				seats = tdao.seatList();
-				if (seats.size() > 8) { // 빈자리 없으면 switch 나가기.
+				seatsNo = tdao.useSeatsNo();
+				if (seatsNo.size() > 8) { // 빈자리 없으면 switch 나가기.
 					System.out.println("▶모든 자리가 대여중입니다.(자리변경 불가)◀");
 					System.out.println("▶메인메뉴로 이동.◀\n");
 					break; 
@@ -291,16 +267,16 @@ public class CafeApp {
 				// loginMem의 현재상태(대여,티켓) 확인.
 				myTk = tdao.myTkUse(loginMem);
 				mySeat = myTk.getSeatId();
-				myTkAry = tdao.myTkNoAry(loginMem);
-				tkCnt = myTkAry.size();
-				if(mySeat == 0) { // 대여시작 안했으면 switch 나가기.
+				
+				// 대여시작 안했으면 switch 나가기.
+				if(mySeat == 0) { 
 					System.out.println("▶자리대여를 시작하지않았습니다.◀");
 					System.out.println("▶자리대여 메뉴를 이용해주세요.◀\n");
-					myTk = null; myTkAry =null;
-					mySeat = 0; tkCnt = 0;
+					mySeat = 0;
 					break;
 				} 
 				
+				// 현재 사용중인 정보 출력.
 				System.out.printf("▷%s님 / ", loginMem.getName());
 				System.out.printf("자리번호: %d번 / ", mySeat);
 				System.out.printf("남은시간: %s ◁\n", myTk.restTimeString());
@@ -308,23 +284,21 @@ public class CafeApp {
 				// 10분이하 남은경우 변경불가. switch 나가기.
 				if (myTk.getRestTime() < 10) {
 					System.out.println("▶잔여시간이 10분 이하인 경우 자리변경이 되지않습니다.◀\n");
-					myTk = null; myTkAry =null;
-					mySeat = 0; tkCnt = 0;
+					mySeat = 0;
 					break;
 				}
 				
 				// 자리선택.
-				choiceSeat = 0;
 				System.out.println("▷변경가능한 자리를 확인하세요.◁");
-				seatView(seats);
+				seat.seatVu(seatsNo);
 				while(true) {
 					System.out.print("▷원하는 자리를 입력하세요.>> ");
 					choiceSeat = scn.nextInt(); scn.nextLine();
-					if (choiceSeat < 1 || choiceSeat > 9) {
+					if (choiceSeat < seat.FIRST_SEAT || choiceSeat > seat.LAST_SEAT) {
 						System.out.println("▶잘못된 자리번호 입니다.◀");
 					} else if (choiceSeat == mySeat) {
 						System.out.printf("▶현재 %s님의 자리입니다.◀\n", loginMem.getName());
-					} else if (seats.contains(choiceSeat)) {
+					} else if (seatsNo.contains(choiceSeat)) {
 						System.out.println("▶현재 사용중인 자리입니다.◀");
 					} else {
 						System.out.println("▷" + choiceSeat + "번 자리로 변경합니다.◁");
@@ -334,7 +308,7 @@ public class CafeApp {
 				
 				// 변경진행.(rent 업데이트)
 				if (tdao.changeSeat(myTk.getTicketNo(), choiceSeat)) {
-					myTk = tdao.myTkUse(loginMem); // 정보 다시가져오기.
+					myTk = tdao.myTkUse(loginMem); // 다시 티켓정보 가져오기.
 					System.out.println("▷자리변경이 완료되었습니다.◁");
 					System.out.printf("▷%s님 / ", loginMem.getName());
 					System.out.printf("자리번호: %d번 /", myTk.getSeatId());
@@ -343,8 +317,7 @@ public class CafeApp {
 					System.out.println("▶변경 오류 발생◀");
 				}
 				
-				myTk = null; myTkAry =null;
-				mySeat = 0; tkCnt = 0;
+				mySeat = 0;
 				
 				break;
 				
@@ -364,12 +337,12 @@ public class CafeApp {
 					System.out.println(loginMem);
 					// 이용권정보 조회.
 					List<Ticket> myTkInfo = tdao.myTkInfo(loginMem);
-					for(Ticket t : myTkInfo) {
-						if (t.getUse().equals("사용중")) {
-							System.out.println(t);
-							System.out.println("남은시간: " + t.restTimeString());
-						} else if(t.getUse().equals("미사용")) {
-							System.out.print(t.simpleString());
+					for(Ticket tk : myTkInfo) {
+						if (tk.getUse().equals("사용중")) {
+							System.out.println(tk);
+							System.out.println("남은시간: " + tk.restTimeString());
+						} else if(tk.getUse().equals("미사용")) {
+							System.out.print(tk.simpleString());
 						}
 					}
 					System.out.println("───────────────────────");
@@ -417,11 +390,11 @@ public class CafeApp {
 				myTk = tdao.myTkUse(loginMem);
 				mySeat = myTk.getSeatId();
 				if(mySeat == 0) {
-					System.out.println("▶현재 사용중인 자리가 없습니다.◀");
+					System.out.println("▶현재 사용중인 자리가 없습니다.◀\n");
 					System.out.print("▶ 1.메인메뉴로 2.카페종료  >> ");
 					choice = scn.nextInt(); scn.nextLine();
 					if (choice == 2 ) {
-						System.out.println("▷안녕히가세요...◁");
+						System.out.println("▷ 안녕히가세요...◁");
 						run = false;
 					}
 					System.out.println();
