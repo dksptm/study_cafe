@@ -7,9 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-// 스터디카페 이용관련 기능구현 클래스.
-public class TicketDAO {
-
+public class TestDAO {
+	
 	Connection conn;
 	PreparedStatement psmt;
 	ResultSet rs;
@@ -397,5 +396,4 @@ public class TicketDAO {
 		return r;
 	}
 
-	
 }

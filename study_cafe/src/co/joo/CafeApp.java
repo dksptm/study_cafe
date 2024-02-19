@@ -6,29 +6,54 @@ import java.util.Scanner;
 
 //사용자의 입출력 처리. 메인메소드.
 public class CafeApp {
+	
+	// 필드선언
+	// 인스턴스 생성 (기능구현을 위함)
+	static Scanner scn = new Scanner(System.in);
+	static JoinDAO jdao = new JoinDAO();
+	static TicketDAO tdao = new TicketDAO();
+	static boolean run = false;
+	// 인스턴스 생성 (데이터를 담기위한 변수)
+	static Member mem = null;
+	static Member loginMem = null;
 
 	// 메인메소드
 	public static void main(String[] args) {
-		
-		// 인스턴스 생성 (기능구현을 위함)
-		Scanner scn = new Scanner(System.in);
-		JoinDAO jdao = new JoinDAO();
-		TicketDAO tdao = new TicketDAO();
-		boolean run = false;
-		
-		// 인스턴스 생성 (데이터를 담기위한 변수)
-		int menu, choice = 0;
-		Member mem = null;
-		Member loginMem = null;
 		
 		/**  시간지난 자리 리셋  **/	
 		System.out.printf("%d건의 대여정보 리셋.\n", tdao.resetTk());
 		System.out.printf("%d건의 이용권정보 리셋.\n", tdao.resetRent());
 		
+		while(true) { // 로그인
+			try {
+				memberLogin();
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("메뉴는 숫자만 입력가능합니다.\n");
+				scn.nextLine(); // 꼭 해줘야 함! 아니면 무한반복!
+			}	
+		}
+		
+		while(true) { // 스터디
+			try {
+				studyMethod();
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("숫자만 입력하세요.\n메인메뉴로 이동합니다.\n");
+				scn.nextLine(); // 꼭 해줘야 함! 아니면 무한반복!
+			}	
+		}
+
+		System.out.println("end of main prog.");
+	}// end of main.
+		
+	// 로그인 메소드.
+	public static void memberLogin() throws InputMismatchException {
+		int menu, choice = 0;
 		/**  회원가입 또는 로그인  **/		
 		System.out.println("1.회원가입 2.로그인");
 		System.out.print("▷ 선택>> ");
-		menu = scn.nextInt(); scn.nextLine();
+		menu = scn.nextInt();scn.nextLine();
 		
 		if (menu == 1) { // 회원가입위한 정보입력.
 			// 아이디 중복체크
@@ -77,7 +102,7 @@ public class CafeApp {
 				System.out.println("▶ 스터디카페는 회원만 이용가능합니다. ◀\n▶ 안녕히가세요. ◀");				
 			}
 			choice = 0;
-		}
+		} // 1번 메뉴.
 		
 		// if~else if 안한 이유 : 1번메뉴에서 회원가입 성공한 경우 2번으로 이동하기 위함.
 		if (menu == 2) { // chkId, chkPw 입력받아 로그인시도.		
@@ -110,8 +135,14 @@ public class CafeApp {
 					break;
 				}
 			}
-		}
+		} // 2번메뉴.
 		
+		System.out.println("end of login prog.");
+	}// 로그인 메소드.
+
+	// 스터디 메소드.
+	public static void studyMethod() throws InputMismatchException {
+		int menu, choice = 0;
 		/**  스터디카페 이용하기  **/
 		while(run) {
 			// 자주사용하는 변수선언 및 초기화.
@@ -191,7 +222,7 @@ public class CafeApp {
 				// loginMem의 이용권 확인 - 이용권 선택.
 				int choiceTk = -1;
 				// 이용권 선택 - 목록출력
-				System.out.println("── " + loginMem.getName()+ "님의 이용권 ──");
+				System.out.println("───" + loginMem.getName()+ "님의 이용권───");
 				for (int i = 0; i < tkCnt; i++) {
 					System.out.print((i+1)+". ");
 					System.out.print(myTkAry.get(i).timeString());
@@ -299,15 +330,16 @@ public class CafeApp {
 					} else if (choiceSeat == mySeat) {
 						System.out.printf("▶ 현재 %s님의 자리입니다. ◀\n", loginMem.getName());
 					} else if (seatsNo.contains(choiceSeat)) {
-						System.out.println("▶현재 사용중인 자리입니다.◀");
+						System.out.println("▶ 현재 사용중인 자리입니다. ◀");
 					} else {
-						System.out.println("▷" + choiceSeat + "번 자리로 변경합니다.◁");
+						System.out.println("▷ " + choiceSeat + "번 자리로 변경합니다. ◁");
 						break;
 					}
 					System.out.println("▶ 자리변경을 취소하고 메인메뉴로 이동할까요? ◀");
 					System.out.print("▶ 1.재입력 2.나가기 >> ");
 					choice = scn.nextInt(); scn.nextLine();
 					if (choice != 1) {
+						System.out.println();
 						choiceSeat = 0;
 						break;
 					}
@@ -437,7 +469,8 @@ public class CafeApp {
 			
 		}// end of while.
 		
-		System.out.println("end of prog.");
-		scn.close();
-	}// end of main.
+		System.out.println("end of study prog.");
+	}// 스터디 메소드.
+
+	
 }// end of class.

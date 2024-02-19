@@ -16,15 +16,17 @@ public class Ticket {
 	private int seatId;
 	private String use;
 	
+	private String category;
+	
 	@Override
 	public String toString() {
 		String str = "사용중이용권: %d(%s)\n시작일시: %s\n종료일시: %s\n자리번호: %d번";
-		return String.format(str, this.ticketNo, timeString(), this.startDate, this.endDate, this.seatId);
+		return String.format(str, this.ticketNo, this.timeString(), this.startDate, this.endDate, this.seatId);
 	}
 	
 	public String simpleString() {
 		String str = "미사용이용권: %d(%s)\n";
-		return String.format(str, this.ticketNo, timeString());
+		return String.format(str, this.ticketNo, this.timeString());
 	}
 	
 	public String timeString() {
