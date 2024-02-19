@@ -92,32 +92,12 @@ public class TicketDAO {
 		return false;
 	}
 	
-	// 간단한 자리조회 - rentvu 테이블에서 자리번호가 있는것 가져오기.
-	public List<Integer> useSeatsNo() {
-		List<Integer> seats = new ArrayList<>();
-		conn = DAO.getConn();
-		sql = "SELECT seat_id\r\n"
-				+ "FROM   rentvu\r\n";
-		try {
-			psmt = conn.prepareStatement(sql);
-			rs = psmt.executeQuery();
-			while(rs.next()) {
-				seats.add(rs.getInt(1));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			disconn();
-		}
-		return seats;
-	}
-	
-	// 상세 자리조회 - 자리번호, 회원이름, 종료시간.
+	// 2. 상세 자리조회 - 자리번호, 회원이름, 종료시간.
 	public List<Seat> useSeats() {
 		List<Seat> useSeats = new ArrayList<>();
 		conn = DAO.getConn();
-		sql = "SELECT m.name, \r\n"
-				+ "   TO_CHAR(r.end_date, 'HH24:MI') AS end,\r\n"
+		sql = "SELECT m.name,"
+				+ "   TO_CHAR(r.end_date, 'HH24:MI') AS end,"
 				+ "   r.seat_id\r\n"
 				+ "FROM   member m JOIN ticketvu t\r\n"
 				+ "                 ON (m.member_id = t.member_id)\r\n"
@@ -141,6 +121,27 @@ public class TicketDAO {
 		}
 		return useSeats;
 	}
+	
+	// 간단한 자리조회 - rentvu 테이블에서 자리번호가 있는것 가져오기.
+	public List<Integer> useSeatsNo() {
+		List<Integer> seatsNo = new ArrayList<>();
+		conn = DAO.getConn();
+		sql = "SELECT seat_id\r\n"
+				+ "FROM   rentvu\r\n";
+		try {
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+			while(rs.next()) {
+				seatsNo.add(rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			disconn();
+		}
+		return seatsNo;
+	}
+	
 	
 	// 3.자리대여 - 회원의 사용중인 이용권 가져오기.
 	public Ticket myTkUse(Member mem) {
