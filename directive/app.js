@@ -3,6 +3,8 @@
 
 import RawComponent from './raw.js';
 import InputComponent from './input.js';
+import ModelComponent from './exam01.js';
+import ListComponent from './list.js';
 
 const { createApp } = Vue
 
@@ -11,9 +13,10 @@ const template = `
     <!-- 자식 컴포넌트 추가 -->
     <!-- <raw-component /> -->
     <!-- input 컴포넌트 추가 -->
-    <input-component />
+    <!--<input-component /> -->
     <!-- 예제 -->
-    <!--<model-component />-->
+    <!--<Model-component />-->
+    <ListComponent />
 </div>
 `;
 
@@ -22,7 +25,8 @@ createApp({
     components : {
         RawComponent, // 'raw-componenet' : RawComponent
         InputComponent,
-        ModelComponent
+        ModelComponent,
+        ListComponent
     }
 })
 .mount('#app');
