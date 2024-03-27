@@ -17,6 +17,12 @@ let template = `
     <p style="color : skyblue; font-size : 200%;">두가지 속성을 직접 지정</p>
     <p v-bind:style="{ color : myColor, fontSize : myFont }">Vue 방식</p>
     <p v-bind:style="myStyle">Vue 방식</p>
+    <!-- bind directive class -->
+    <p class="emphasis">직접 클래스 지정</p>
+    <p v-bind:class="myClass">Vue 활용 클래스 지정</p>
+    <p class="bg emphasis">직접 복수 클래스 지정</p>
+    <p v-bind:class="[bgClass, myClass]">Vue 활용 복수 클래스 지정</p>
+    <p v-bind:class="{'text' : isSelected}">Vue 활용 class 적용여부 제어</p>
 </div>
 `;
 
@@ -33,7 +39,10 @@ export default {
             myStyle : { 
                 color : 'green',
                 fontSize : '200%'
-            }
+            },
+            myClass : 'emphasis',
+            bgClass : 'bg',
+            isSelected : false
         }
     }
 }
