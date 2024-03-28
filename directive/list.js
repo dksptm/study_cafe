@@ -23,9 +23,12 @@ let template = `
         </ul>
     </div>
     <hr>
+    <!-- 2) -->
     <div>
         <ul v-for="user in users" :key="user.id">
-            <li v-for="(value, name) in user" :key="value">{{ name }} : {{ value }}</li>
+            <li v-for="(value, name, idx) in user" :key="value">
+                {{ name }} : {{ value }}, {{ idx }}
+            </li>
         </ul>
     </div>
 </div>
