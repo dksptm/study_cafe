@@ -7,11 +7,25 @@ let template = `
     <button type="button" @click="changeChildData"> Change Child Data </button>
     <button type="button" @click="clickChildEvent"> Child Click Event </button>
     <button type="button" @click="executeChildFunc"> Child Method Excute </button>
+    <p style="background-color:skyblue;"> 동기화 message : {{ msg }} </p>
 </div>
 `;
 
 export default {
     template,
+    data() {
+        return {
+            isMounted : false
+        }
+    },
+    mounted() {
+        this.isMounted = true;
+    },
+    computed : {
+        msg() {
+            return !this.isMounted ? '' : this.$refs.child.msg;
+        }
+    },
     methods : {
         changeChildData() {
             //console.log(this.$refs);
