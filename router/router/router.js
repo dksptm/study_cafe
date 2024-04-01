@@ -2,6 +2,8 @@
 import HomeComponent from '../views/home.js';
 import PostListComponent from '../views/postList.js';
 import PostInfoComponent from '../views/postInfo.js';
+import PostInsertComponent from '../views/postInsert.js';
+import PostUpdateComponent from '../views/postUpdate.js';
 
 const { createRouter, createWebHistory } = VueRouter
 
@@ -24,6 +26,16 @@ let routes = [
         path : '/postInfo',
         name : 'postInfo',
         component : PostInfoComponent
+    },
+    {
+        path : '/postInsert',
+        name : 'postInsert',
+        component : PostInsertComponent
+    },
+    {
+        path : '/postUpdate',
+        name : 'postUpdate',
+        component : PostUpdateComponent
     }
 ]
 
